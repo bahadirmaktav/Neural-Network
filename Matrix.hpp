@@ -18,6 +18,17 @@ public:
             data[i] = new double[colNum]{0};
         }
     }
+    Matrix(const Matrix & iMatrix) {
+        rowNum = iMatrix.rowNum;
+        colNum = iMatrix.colNum;
+        data = new double*[rowNum];
+        for(int i = 0; i < rowNum; i++) {
+            data[i] = new double[colNum]{0};
+            for(int j = 0; j < colNum; j++) {
+                data[i][j] = iMatrix.data[i][j];
+            }
+        }
+    }
     ~Matrix() {
         for(int i = 0; i < rowNum; i++) {
             delete[] data[i];
@@ -32,8 +43,15 @@ public:
             std::cout << "\n";
         }
     }
-
-    // Operator overloading functions returns new Matrix except '='.
+    // RandomiseElements function used for Weight and Bias matrices.
+    void RandomiseElements(double minVal, double maxVal) {
+        for(int i = 0; i < rowNum; i++) {
+            for(int j = 0; j < colNum; j++) {
+                double randomNum = (rand() / (double)RAND_MAX) * (maxVal - minVal) + minVal;
+                data[i][j] = randomNum;
+            }
+        }
+    }
     void operator = (const Matrix & iMatrix) {
         if(iMatrix.rowNum != rowNum || iMatrix.colNum != colNum) {
             throw std::runtime_error("Error : You cannot equalize matrices with different dimensions!");
@@ -44,56 +62,63 @@ public:
             }
         }
     }
-    Matrix & operator + (const Matrix & iMatrix) {
+    Matrix operator + (const Matrix & iMatrix) {
         if(iMatrix.rowNum != rowNum || iMatrix.colNum != colNum) {
             throw std::runtime_error("Error : You cannot add matrices with different dimensions!");
         }
-        Matrix * res = new Matrix(rowNum, colNum);
+        Matrix res(rowNum, colNum);
         for(int i = 0; i < rowNum; i++) {
             for(int j = 0; j < colNum; j++) {
-                res->data[i][j] = data[i][j] + iMatrix.data[i][j];
+                res.data[i][j] = data[i][j] + iMatrix.data[i][j];
             }
         }
-        return *res;
+        return res;
     }
-    Matrix & operator - (const Matrix & iMatrix) {
+    Matrix operator - (const Matrix & iMatrix) {
         if(iMatrix.rowNum != rowNum || iMatrix.colNum != colNum) {
             throw std::runtime_error("Error : You cannot subtract matrices with different dimensions!");
         }
-        Matrix * res = new Matrix(rowNum, colNum);
+        Matrix res = Matrix(rowNum, colNum);
         for(int i = 0; i < rowNum; i++) {
             for(int j = 0; j < colNum; j++) {
-                res->data[i][j] = data[i][j] - iMatrix.data[i][j];
+                res.data[i][j] = data[i][j] - iMatrix.data[i][j];
             }
         }
-        return *res;
+        return res;
     }
-    Matrix & operator * (const Matrix & iMatrix) {
+    Matrix operator * (const Matrix & iMatrix) {  // Matrix Multiplication
         if(colNum != iMatrix.rowNum) {
             throw std::runtime_error("Error : First matrix column number must equal to second matrix row number to multiply these matrices!");
         }
-        Matrix * res = new Matrix(rowNum, iMatrix.colNum);
+        Matrix res = Matrix(rowNum, iMatrix.colNum);
         for(int i = 0; i < rowNum; i++) {
             for(int j = 0; j < iMatrix.colNum; j++) {
                 for(int c = 0; c < iMatrix.rowNum; c++) {
-                    res->data[i][j] += (data[i][c] * iMatrix.data[c][j]); 
+                    res.data[i][j] += (data[i][c] * iMatrix.data[c][j]); 
                 }
             }
         }
-        return *res;
+        return res;
     }
-    Matrix & operator * (const double & iConst) {
-        Matrix * res = new Matrix(rowNum, colNum);
+    Matrix operator * (const double & iConst) {
+        Matrix res = Matrix(rowNum, colNum);
         for(int i = 0; i < rowNum; i++) {
             for(int j = 0; j < colNum; j++) {
-                res->data[i][j] = data[i][j] * iConst;
+                res.data[i][j] = data[i][j] * iConst;
             }
         }
-        return *res;
+        return res;
     }
-
-    // Below functions changes the current Matrix object.
-    void Map(std::function<double(double)> handlerFn) {
+    Matrix MapToNewMatrix(std::function<double(double)> handlerFn) {
+        Matrix res = Matrix(rowNum, colNum);
+        for(int i = 0; i < rowNum; i++) {
+            for(int j = 0; j < colNum; j++) {
+                res.data[i][j] = handlerFn(data[i][j]);
+            }
+        }
+        return res;
+    }
+    void MapToCurrentMatrix(std::function<double(double)> handlerFn) {
         for(int i = 0; i < rowNum; i++) {
             for(int j = 0; j < colNum; j++) {
                 data[i][j] = handlerFn(data[i][j]);
