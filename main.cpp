@@ -51,6 +51,7 @@ int main(int, char**) {
         std::cout << "Output Matrix : " << std::endl;
         outputMatrix.PrintMatrix();
     */
+    /*
         Matrix m6(2, 3);
         m6.data[0][0] = 5; m6.data[0][1] = 4; m6.data[0][2] = -7;
         m6.data[1][0] = 2; m6.data[1][1] = -5; m6.data[1][2] = 9;
@@ -65,6 +66,12 @@ int main(int, char**) {
         m8.PrintMatrix();
         std::cout << "m7 .* m8 = : " << std::endl;
         m8.ElementWiseMultiply(m7).PrintMatrix();
+    */
+        NeuralNetwork nn(2,3,2);
+        Matrix inputMatrix(2, 1);    /**/  Matrix labeledMatrix(2, 1);
+        inputMatrix.data[0][0] = 1;  /**/  labeledMatrix.data[0][0] = 1;
+        inputMatrix.data[1][0] = 0;  /**/  labeledMatrix.data[1][0] = 0;
+        nn.Train(inputMatrix, labeledMatrix);
     }
     catch(const std::exception& e) {
         std::cerr << e.what() << '\n';

@@ -8,8 +8,9 @@
 class NeuralNetwork {
 public:
     NeuralNetwork(int iInputLayerLen, int iHiddenLayerLen, int iOutputLayerLen)
-    : hiddenMatrix_(iHiddenLayerLen, 1)
+    : learningRate_(0.01)
     // , inputMatrix_(iInputLayerLen, 1)
+    , hiddenMatrix_(iHiddenLayerLen, 1)
     , outputMatrix_(iOutputLayerLen, 1)
     , weightMatrixIH_(iHiddenLayerLen, iInputLayerLen)
     , weightMatrixHO_(iOutputLayerLen, iHiddenLayerLen)
@@ -22,9 +23,12 @@ public:
         sigmoidFn_ = [](double val) -> double {
             return 1 / (1 + exp(-1 * val));
         };
+        diffOfSigmoidFn_ = [&](double val) -> double {
+            return sigmoidFn_(val) * (1 - sigmoidFn_(val));
+        };
     }
     ~NeuralNetwork() {}
-    Matrix & FeedForward(const Matrix & inputMatrix) {
+    Matrix & FeedForward(Matrix & inputMatrix) {
         // INPUT TO HIDDEN PART
         hiddenMatrix_ = ((weightMatrixIH_ * inputMatrix) + biasHidden_).MapToNewMatrix(sigmoidFn_);
         // HIDDEN TO OUTPUT PART
@@ -32,8 +36,22 @@ public:
         // RETURN OUTPUT
         return outputMatrix_;
     }
-    void Train(const Matrix & inputMatrix, const Matrix & labeledMatrix) {
-        
+    void Train(Matrix & inputMatrix, Matrix & labeledMatrix) {
+        // GET OUTPUT MATRIX AND NOT SIGMOIDED OUTPUT MATRIX
+        Matrix zHidden = ((weightMatrixIH_ * inputMatrix) + biasHidden_); 
+        hiddenMatrix_ = zHidden.MapToNewMatrix(sigmoidFn_);
+        Matrix zOutput = ((weightMatrixHO_ * hiddenMatrix_) + biasOutput_);
+        outputMatrix_ = zOutput.MapToNewMatrix(sigmoidFn_);
+        // HIDDEN ERROR MATRIX
+        Matrix errorMatrix = (outputMatrix_ - labeledMatrix);
+        Matrix hiddenErrorMatrix = weightMatrixHO_.Transpose() * errorMatrix;
+        // BACKPROPAGATION - OUTPUT TO HIDDEN
+        Matrix deltaMatrixOH = (errorMatrix.ElementWiseMultiply(zOutput.MapToNewMatrix(diffOfSigmoidFn_)) * hiddenMatrix_.Transpose()) * learningRate_ * -1;
+        // BACKPROPAGATION - HIDDEN TO INPUT
+        Matrix deltaMatrixHI = (hiddenErrorMatrix.ElementWiseMultiply(zHidden.MapToNewMatrix(diffOfSigmoidFn_)) * inputMatrix.Transpose()) * learningRate_ * -1;
+        // ADJUST WEIGHTS
+        weightMatrixHO_ = weightMatrixHO_ + deltaMatrixOH;
+        weightMatrixIH_ = weightMatrixIH_ + deltaMatrixHI;
     }
 
     // TODO : Testing purposes remove later.
@@ -42,14 +60,16 @@ public:
     }
 
 private:
-    Matrix hiddenMatrix_;
+    double learningRate_;
     // Matrix inputMatrix_;
+    Matrix hiddenMatrix_;
     Matrix outputMatrix_;
     Matrix weightMatrixIH_;  // Input to Hidden
     Matrix weightMatrixHO_;  // Hidden to Output
     Matrix biasOutput_;
     Matrix biasHidden_;
     std::function<double(double)> sigmoidFn_;
+    std::function<double(double)> diffOfSigmoidFn_;
 };
 
 #endif //  NEURAL_NETWORK_HPP_
