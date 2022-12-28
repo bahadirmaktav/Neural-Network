@@ -1,8 +1,9 @@
 #include <iostream>
-#include "Matrix.hpp"
+#include "NeuralNetwork.hpp"
 
 int main(int, char**) {
     try {
+    /* Matrix functions tests :
         Matrix m1(2, 3);
         Matrix m2(3, 4);
         Matrix m3(2, 4);
@@ -33,6 +34,21 @@ int main(int, char**) {
         m4.Map(halfFn);
         std::cout << "Matrix m4 = all elements divided by 2 : " << std::endl;
         m4.PrintMatrix();
+    */
+    /* Random number generator tests :
+        NeuralNetwork nnSigmoidTest(2,3,2);
+        std::cout << "Sigmoid(0.6) = " << nnSigmoidTest.Sigmoid(0.6) << std::endl;
+        srand((unsigned int)time(NULL));
+        for(int i = 0; i < 20; i++) {
+            std::cout << "Random value : " << (rand() / (double)RAND_MAX) * (1 - (-1)) + (-1) << std::endl;
+        }
+    */
+        NeuralNetwork nn(2,3,2);
+        Matrix inputMatrix(2, 1);
+        inputMatrix.data[0][0] = 0.52; inputMatrix.data[1][0] = 0.73;
+        Matrix outputMatrix = nn.FeedForward(inputMatrix);
+        std::cout << "Output Matrix : " << std::endl;
+        outputMatrix.PrintMatrix();
     }
     catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
