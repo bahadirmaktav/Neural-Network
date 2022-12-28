@@ -1,6 +1,8 @@
 #ifndef MATRIX_HPP_
 #define MATRIX_HPP_
 
+#include <ctime>
+
 #include <iostream>
 #include <functional>
 
@@ -45,6 +47,7 @@ public:
     }
     // RandomiseElements function used for Weight and Bias matrices.
     void RandomiseElements(double minVal, double maxVal) {
+        srand((unsigned int)time(NULL));
         for(int i = 0; i < rowNum; i++) {
             for(int j = 0; j < colNum; j++) {
                 double randomNum = (rand() / (double)RAND_MAX) * (maxVal - minVal) + minVal;
