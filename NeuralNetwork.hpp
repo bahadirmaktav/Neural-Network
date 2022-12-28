@@ -59,7 +59,7 @@ public:
         return 1 / (1 + exp(-1 * val));
     }
 
-private:
+public:
     double learningRate_;
     // Matrix inputMatrix_;
     Matrix hiddenMatrix_;

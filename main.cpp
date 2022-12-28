@@ -67,11 +67,58 @@ int main(int, char**) {
         std::cout << "m7 .* m8 = : " << std::endl;
         m8.ElementWiseMultiply(m7).PrintMatrix();
     */
+    /*    
         NeuralNetwork nn(2,3,2);
-        Matrix inputMatrix(2, 1);    /**/  Matrix labeledMatrix(2, 1);
-        inputMatrix.data[0][0] = 1;  /**/  labeledMatrix.data[0][0] = 1;
-        inputMatrix.data[1][0] = 0;  /**/  labeledMatrix.data[1][0] = 0;
+        Matrix inputMatrix(2, 1);     Matrix labeledMatrix(2, 1);
+        inputMatrix.data[0][0] = 1;   labeledMatrix.data[0][0] = 1;
+        inputMatrix.data[1][0] = 0;   labeledMatrix.data[1][0] = 0;
         nn.Train(inputMatrix, labeledMatrix);
+    */
+        NeuralNetwork neuralNetwork(2, 2, 1);
+        Matrix m00(2, 1); m00.data[0][0] = 0; m00.data[1][0] = 0;
+        Matrix m01(2, 1); m01.data[0][0] = 0; m01.data[1][0] = 1;
+        Matrix m10(2, 1); m10.data[0][0] = 1; m10.data[1][0] = 0;
+        Matrix m11(2, 1); m11.data[0][0] = 1; m11.data[1][0] = 1;
+        Matrix inputMatrixArray[4] = { m00, m01, m10, m11 };
+        Matrix m00l(1, 1); m00l.data[0][0] = 0;
+        Matrix m01l(1, 1); m01l.data[0][0] = 1;
+        Matrix m10l(1, 1); m10l.data[0][0] = 1;
+        Matrix m11l(1, 1); m11l.data[0][0] = 0;
+        Matrix labelMatrixArray[4] = { m00l, m01l, m10l, m11l };
+        std::cout << "Enter the number of train sample!" << std::endl;
+        int trainSampleNum = 10;
+        std::cin >> trainSampleNum;
+        std::cout << "Training started!" << std::endl;
+        srand((unsigned int)time(NULL));
+        for(int i = 0; i < trainSampleNum; i++) {
+            int randomInd = (rand() / (double)RAND_MAX) * 3;
+            neuralNetwork.Train(inputMatrixArray[randomInd], labelMatrixArray[randomInd]);
+        }
+        std::cout << "bias hidden matrix : " << std::endl;
+        neuralNetwork.biasHidden_.PrintMatrix();
+        std::cout << "\n";
+        std::cout << "bias output matrix : " << std::endl;
+        neuralNetwork.biasOutput_.PrintMatrix();
+        std::cout << "\n";
+        std::cout << "weight hidden to output matrix : " << std::endl;
+        neuralNetwork.weightMatrixHO_.PrintMatrix();
+        std::cout << "\n";
+        std::cout << "weight input to hidden matrix : " << std::endl;
+        neuralNetwork.weightMatrixIH_.PrintMatrix();
+        std::cout << "\n";
+        std::cout << "Training finished!" << std::endl;
+        int firstInput = 0; int secondInput = 0;
+        while(firstInput != -999 && secondInput != -999) {
+            std::cout << "\n" << "Neural Network is ready to make educated guess." << std::endl;
+            std::cout << "Enter first input(0 or 1)." << std::endl;
+            std::cin >> firstInput;
+            std::cout << "Enter second input(0 or 1)." << std::endl;
+            std::cin >> secondInput;
+            Matrix inputMatrix(2, 1); inputMatrix.data[0][0] = firstInput; inputMatrix.data[1][0] = secondInput;
+            std::cout << "Output guess of the trained neural network is : ";
+            neuralNetwork.FeedForward(inputMatrix).PrintMatrix();
+            std::cout << "\n";
+        }
     }
     catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
