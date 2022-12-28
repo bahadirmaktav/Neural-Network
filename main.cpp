@@ -43,12 +43,28 @@ int main(int, char**) {
             std::cout << "Random value : " << (rand() / (double)RAND_MAX) * (1 - (-1)) + (-1) << std::endl;
         }
     */
+    /*
         NeuralNetwork nn(2,3,2);
         Matrix inputMatrix(2, 1);
         inputMatrix.data[0][0] = 0.52; inputMatrix.data[1][0] = 0.73;
         Matrix outputMatrix = nn.FeedForward(inputMatrix);
         std::cout << "Output Matrix : " << std::endl;
         outputMatrix.PrintMatrix();
+    */
+        Matrix m6(2, 3);
+        m6.data[0][0] = 5; m6.data[0][1] = 4; m6.data[0][2] = -7;
+        m6.data[1][0] = 2; m6.data[1][1] = -5; m6.data[1][2] = 9;
+        Matrix m7 = m6.Transpose();
+        std::cout << "m7 matrix : " << std::endl;
+        m7.PrintMatrix();
+        Matrix m8(3, 2);
+        m8.data[0][0] = 5; m8.data[0][1] = 4;
+        m8.data[1][0] = -7; m8.data[1][1] = 5;
+        m8.data[2][0] = 5; m8.data[2][1] = -2;
+        std::cout << "m8 matrix : " << std::endl;
+        m8.PrintMatrix();
+        std::cout << "m7 .* m8 = : " << std::endl;
+        m8.ElementWiseMultiply(m7).PrintMatrix();
     }
     catch(const std::exception& e) {
         std::cerr << e.what() << '\n';

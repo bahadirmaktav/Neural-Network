@@ -112,6 +112,27 @@ public:
         }
         return res;
     }
+    Matrix Transpose() {
+        Matrix res = Matrix(colNum, rowNum);
+        for(int i = 0; i < rowNum; i++) {
+            for(int j = 0; j < colNum; j++) {
+                res.data[j][i] = data[i][j];
+            }
+        }
+        return res;
+    }
+    Matrix ElementWiseMultiply(const Matrix & iMatrix) {  // Matrix Element Wise Multiplication
+        if(iMatrix.rowNum != rowNum || iMatrix.colNum != colNum) {
+            throw std::runtime_error("Error : You cannot multiply(element wise) matrices with different dimensions!");
+        }
+        Matrix res = Matrix(rowNum, colNum);
+        for(int i = 0; i < rowNum; i++) {
+            for(int j = 0; j < colNum; j++) {
+                res.data[i][j] = data[i][j] * iMatrix.data[i][j];
+            }
+        }
+        return res;
+    }
     Matrix MapToNewMatrix(std::function<double(double)> handlerFn) {
         Matrix res = Matrix(rowNum, colNum);
         for(int i = 0; i < rowNum; i++) {
