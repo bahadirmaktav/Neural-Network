@@ -99,11 +99,16 @@ int main(int, char**) {
         std::cin >> trainSampleNum;
         std::cout << "Training started!\n";
         srand((unsigned int)time(NULL));
+        int counter = 1;
         for(int i = 0; i < trainSampleNum; i++) {
             int randomInd = (rand() / (double)RAND_MAX) * 4;
             randomInd %= 4;
             // std::cout << randomInd << std::endl;
             neuralNetwork.Train(inputMatrixArray[randomInd], labelMatrixArray[randomInd]);
+            if(counter % 1000000 == 0) {
+                std::cout << "Trained Sample Number : " << counter << std::endl;
+            }
+            counter++;
         }
         std::cout << "Training finished!\n\n";
         std::cout << "Trained Neural Network Infos : " << std::endl;
@@ -127,17 +132,21 @@ int main(int, char**) {
         //     neuralNetwork.FeedForward(inputMatrix).PrintMatrix();
         //     std::cout << "\n";
         // }
-        Matrix inputMatrix(2, 1); inputMatrix.data[0][0] = 0; inputMatrix.data[1][0] = 0;
+        Matrix inputMatrix(2, 1); 
         std::cout << "\nOutput guess of the trained neural network for (0,0) is : ";
+        inputMatrix.data[0][0] = 0; inputMatrix.data[1][0] = 0;
         neuralNetwork.FeedForward(inputMatrix).PrintMatrix();
-        inputMatrix.data[0][0] = 0; inputMatrix.data[1][0] = 1;
+
         std::cout << "\nOutput guess of the trained neural network for (0,1) is : ";
+        inputMatrix.data[0][0] = 0; inputMatrix.data[1][0] = 1;
         neuralNetwork.FeedForward(inputMatrix).PrintMatrix();
-        inputMatrix.data[0][0] = 1; inputMatrix.data[1][0] = 0;
+
         std::cout << "\nOutput guess of the trained neural network for (1,0) is : ";
+        inputMatrix.data[0][0] = 1; inputMatrix.data[1][0] = 0;
         neuralNetwork.FeedForward(inputMatrix).PrintMatrix();
-        inputMatrix.data[0][0] = 1; inputMatrix.data[1][0] = 1;
+
         std::cout << "\nOutput guess of the trained neural network for (1,1) is : ";
+        inputMatrix.data[0][0] = 1; inputMatrix.data[1][0] = 1;
         neuralNetwork.FeedForward(inputMatrix).PrintMatrix();
     }
     catch(const std::exception& e) {
