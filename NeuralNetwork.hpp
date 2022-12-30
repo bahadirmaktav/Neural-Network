@@ -8,7 +8,7 @@
 class NeuralNetwork {
 public:
     NeuralNetwork(int iInputLayerLen, int iHiddenLayerLen, int iOutputLayerLen)
-    : learningRate_(0.01)
+    : learningRate_(0.1)
     // , inputMatrix_(iInputLayerLen, 1)
     , hiddenMatrix_(iHiddenLayerLen, 1)
     , outputMatrix_(iOutputLayerLen, 1)
@@ -48,16 +48,22 @@ public:
         // std::cout << "hiddenErrorMatrix : " << std::endl;
         // weightMatrixHO_.Transpose().MeanByColumns().PrintMatrix();
         // BACKPROPAGATION - OUTPUT TO HIDDEN
-        Matrix deltaMatrixOH = (errorMatrix.ElementWiseMultiply(zOutput.MapToNewMatrix(diffOfSigmoidFn_)) * hiddenMatrix_.Transpose()) * learningRate_ * -1;
+        Matrix msDeltaMatrixOH = errorMatrix.ElementWiseMultiply(zOutput.MapToNewMatrix(diffOfSigmoidFn_));
+        Matrix deltaWeightMatrixOH = (msDeltaMatrixOH * hiddenMatrix_.Transpose()) * learningRate_ * -1;
+        Matrix deltaBiasMatrixO = msDeltaMatrixOH * learningRate_ * -1;
         // BACKPROPAGATION - HIDDEN TO INPUT
-        Matrix deltaMatrixHI = (hiddenErrorMatrix.ElementWiseMultiply(zHidden.MapToNewMatrix(diffOfSigmoidFn_)) * inputMatrix.Transpose()) * learningRate_ * -1;
+        Matrix msDeltaMatrixHI = hiddenErrorMatrix.ElementWiseMultiply(zHidden.MapToNewMatrix(diffOfSigmoidFn_));
+        Matrix deltaWeightMatrixHI = (msDeltaMatrixHI * inputMatrix.Transpose()) * learningRate_ * -1;
+        Matrix deltaBiasMatrixH = msDeltaMatrixHI * learningRate_ * -1;
         // ADJUST WEIGHTS
         // std::cout << "deltaMatrixOH : " << std::endl;
         // deltaMatrixOH.PrintMatrix();
         // std::cout << "deltaMatrixHI : " << std::endl;
         // deltaMatrixHI.PrintMatrix();
-        weightMatrixHO_ = weightMatrixHO_ + deltaMatrixOH;
-        weightMatrixIH_ = weightMatrixIH_ + deltaMatrixHI;
+        weightMatrixHO_ = weightMatrixHO_ + deltaWeightMatrixOH;
+        weightMatrixIH_ = weightMatrixIH_ + deltaWeightMatrixHI;
+        biasOutput_ = biasOutput_ + deltaBiasMatrixO;
+        biasHidden_ = biasHidden_ + deltaBiasMatrixH;
     }
 
     // TODO : Testing purposes remove later.
