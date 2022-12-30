@@ -149,6 +149,19 @@ public:
             }
         }
     }
+    Matrix MeanByColumns() {
+        Matrix res = Matrix(rowNum, colNum);
+        for(int j = 0; j < colNum; j++) {
+            double colSum = 0;
+            for(int i = 0; i < rowNum; i++) {
+                colSum += data[i][j];
+            }
+            for(int i = 0; i < rowNum; i++) {
+                res.data[i][j] = data[i][j] / colSum;
+            }
+        }
+        return res;
+    }
 };
 
 #endif // MATRIX_HPP_

@@ -44,12 +44,18 @@ public:
         outputMatrix_ = zOutput.MapToNewMatrix(sigmoidFn_);
         // HIDDEN ERROR MATRIX
         Matrix errorMatrix = (outputMatrix_ - labeledMatrix);
-        Matrix hiddenErrorMatrix = weightMatrixHO_.Transpose() * errorMatrix;
+        Matrix hiddenErrorMatrix = weightMatrixHO_.Transpose().MeanByColumns() * errorMatrix;
+        // std::cout << "hiddenErrorMatrix : " << std::endl;
+        // weightMatrixHO_.Transpose().MeanByColumns().PrintMatrix();
         // BACKPROPAGATION - OUTPUT TO HIDDEN
         Matrix deltaMatrixOH = (errorMatrix.ElementWiseMultiply(zOutput.MapToNewMatrix(diffOfSigmoidFn_)) * hiddenMatrix_.Transpose()) * learningRate_ * -1;
         // BACKPROPAGATION - HIDDEN TO INPUT
         Matrix deltaMatrixHI = (hiddenErrorMatrix.ElementWiseMultiply(zHidden.MapToNewMatrix(diffOfSigmoidFn_)) * inputMatrix.Transpose()) * learningRate_ * -1;
         // ADJUST WEIGHTS
+        // std::cout << "deltaMatrixOH : " << std::endl;
+        // deltaMatrixOH.PrintMatrix();
+        // std::cout << "deltaMatrixHI : " << std::endl;
+        // deltaMatrixHI.PrintMatrix();
         weightMatrixHO_ = weightMatrixHO_ + deltaMatrixOH;
         weightMatrixIH_ = weightMatrixIH_ + deltaMatrixHI;
     }
