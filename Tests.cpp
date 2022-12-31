@@ -103,7 +103,6 @@ int main(int, char**) {
         for(int i = 0; i < trainSampleNum; i++) {
             int randomInd = (rand() / (double)RAND_MAX) * 4;
             randomInd %= 4;
-            // std::cout << randomInd << std::endl;
             neuralNetwork.Train(inputMatrixArray[randomInd], labelMatrixArray[randomInd]);
             if(counter % 1000000 == 0) {
                 std::cout << "Trained Sample Number : " << counter << std::endl;
@@ -120,18 +119,7 @@ int main(int, char**) {
         neuralNetwork.weightMatrixHO_.PrintMatrix();
         std::cout << "weight input to hidden matrix : " << std::endl;
         neuralNetwork.weightMatrixIH_.PrintMatrix();
-        // int firstInput = 0; int secondInput = 0;
-        // while(firstInput != -999 && secondInput != -999) {
-        //     std::cout << "\n" << "Neural Network is ready to make educated guess." << std::endl;
-        //     std::cout << "Enter first input(0 or 1)." << std::endl;
-        //     std::cin >> firstInput;
-        //     std::cout << "Enter second input(0 or 1)." << std::endl;
-        //     std::cin >> secondInput;
-        //     Matrix inputMatrix(2, 1); inputMatrix.data[0][0] = firstInput; inputMatrix.data[1][0] = secondInput;
-        //     std::cout << "Output guess of the trained neural network is : ";
-        //     neuralNetwork.FeedForward(inputMatrix).PrintMatrix();
-        //     std::cout << "\n";
-        // }
+
         Matrix inputMatrix(2, 1); 
         std::cout << "\nOutput guess of the trained neural network for (0,0) is : ";
         inputMatrix.data[0][0] = 0; inputMatrix.data[1][0] = 0;

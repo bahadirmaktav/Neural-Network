@@ -45,8 +45,6 @@ public:
         // HIDDEN ERROR MATRIX
         Matrix errorMatrix = (outputMatrix_ - labeledMatrix);
         Matrix hiddenErrorMatrix = weightMatrixHO_.Transpose().MeanByColumns() * errorMatrix;
-        // std::cout << "hiddenErrorMatrix : " << std::endl;
-        // weightMatrixHO_.Transpose().MeanByColumns().PrintMatrix();
         // BACKPROPAGATION - OUTPUT TO HIDDEN
         Matrix msDeltaMatrixOH = errorMatrix.ElementWiseMultiply(zOutput.MapToNewMatrix(diffOfSigmoidFn_));
         Matrix deltaWeightMatrixOH = (msDeltaMatrixOH * hiddenMatrix_.Transpose()) * learningRate_ * -1;
@@ -56,10 +54,6 @@ public:
         Matrix deltaWeightMatrixHI = (msDeltaMatrixHI * inputMatrix.Transpose()) * learningRate_ * -1;
         Matrix deltaBiasMatrixH = msDeltaMatrixHI * learningRate_ * -1;
         // ADJUST WEIGHTS
-        // std::cout << "deltaMatrixOH : " << std::endl;
-        // deltaMatrixOH.PrintMatrix();
-        // std::cout << "deltaMatrixHI : " << std::endl;
-        // deltaMatrixHI.PrintMatrix();
         weightMatrixHO_ = weightMatrixHO_ + deltaWeightMatrixOH;
         weightMatrixIH_ = weightMatrixIH_ + deltaWeightMatrixHI;
         biasOutput_ = biasOutput_ + deltaBiasMatrixO;

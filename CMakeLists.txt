@@ -3,4 +3,4 @@ project(NeuralNetwork VERSION 0.1.0)
 
 include_directories(.)
 
-add_executable(NeuralNetwork main.cpp)
+add_subdirectory(./examples/XorProblem)
