@@ -162,6 +162,33 @@ public:
         }
         return res;
     }
+    void IterateByRow(std::function<void(double)> handlerFn) {
+        for(int i = 0; i < rowNum; i++) {
+            for(int j = 0; j < colNum; j++) {
+                handlerFn(data[i][j]);
+            }
+        }
+    }
+    void ReloadWithArray(int iRowNum, int iColNum, double * iArr, int iArrLen) {
+        if(iArrLen != iRowNum * iColNum) {
+            throw std::runtime_error("Error : Array size must equal to total element size of the matrix to reset matrix!");
+        }
+        // Deallocation of Data Part
+        for(int i = 0; i < rowNum; i++) {
+            delete[] data[i];
+        }
+        delete[] data;
+        // Allocation of Data with Input Array Part
+        rowNum = iRowNum;
+        colNum = iColNum;
+        data = new double*[rowNum];
+        for(int i = 0; i < rowNum; i++) {
+            data[i] = new double[colNum]{0};
+            for(int j = 0; j < colNum; j++) {
+                data[i][j] = iArr[i * colNum + j];
+            }
+        }
+    }
 };
 
 #endif // MATRIX_HPP_
