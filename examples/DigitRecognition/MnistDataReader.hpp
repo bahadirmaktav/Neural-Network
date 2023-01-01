@@ -12,7 +12,7 @@
 struct MnistData {
     int rowNum;
     int colNum;
-    int * data;
+    double * data;
     int label;
     MnistData()
     : rowNum(28)
@@ -28,12 +28,13 @@ struct MnistData {
         std::cout << "Gray Scale Image Matrix :" << std::endl;
         for(int i = 0; i < rowNum; i++) {
             for(int j = 0; j < colNum; j++) {
-                if(data[colNum * i + j] < 10) {
-                    std::cout << data[colNum * i + j] << "   ";
-                } else if(data[colNum * i + j] < 100) {
-                    std::cout << data[colNum * i + j] << "  ";                    
+                int buff = (data[colNum * i + j] * 255);
+                if(buff < 10) {
+                    std::cout << buff << "   ";
+                } else if(buff < 100) {
+                    std::cout << buff << "  ";                    
                 } else {
-                    std::cout << data[colNum * i + j] << " ";
+                    std::cout << buff << " ";
                 }
             }
             std::cout << "\n";
@@ -75,7 +76,7 @@ public:
             MnistData ** imageList = new MnistData*[numberOfReads];
             for(int k = 0; k < numberOfReads; k++) {
                 MnistData * image = new MnistData();
-                image->data = new int[imagePixelSize];
+                image->data = new double[imagePixelSize];
                 unsigned char buffer = 0;
                 labelFile.read((char *)&buffer, sizeof(buffer));
                 image->label = buffer;
@@ -84,7 +85,7 @@ public:
                 for(int i = 0; i < imagePixelSize; i++) {
                     unsigned char pixelBuffer = 0;
                     imageFile.read((char *)&pixelBuffer, sizeof(pixelBuffer));
-                    image->data[i] = pixelBuffer;
+                    image->data[i] = (double)(255 - pixelBuffer) / 255;
                 }
                 imageList[k] = image;
             }

@@ -21,10 +21,16 @@ public:
     , weightMatrixHO_(iOutputLayerLen, iHiddenLayerLen)
     , biasOutput_(iOutputLayerLen, 1)
     , biasHidden_(iHiddenLayerLen, 1) {
-        weightMatrixIH_.RandomiseElements(-1 , 1);
-        weightMatrixHO_.RandomiseElements(-1 , 1);
-        biasOutput_.RandomiseElements(-1 , 1);
-        biasHidden_.RandomiseElements(-1 , 1);
+        weightMatrixIH_.RandomiseElements(-1, 1);
+        weightMatrixHO_.RandomiseElements(-1, 1);
+        // biasOutput_.RandomiseElements(0.1, 0.5);
+        // biasHidden_.RandomiseElements(0.1, 0.5);
+        biasOutput_.MapToCurrentMatrix([](double val) -> double {
+            return 1;
+        });
+        biasHidden_.MapToCurrentMatrix([](double val) -> double {
+            return 1;
+        });
         sigmoidFn_ = [](double val) -> double {
             return 1 / (1 + exp(-1 * val));
         };
