@@ -3,4 +3,5 @@ project(NeuralNetwork VERSION 0.1.0)
 
 include_directories(./inc)
 
-add_subdirectory(./examples/XorProblem)
+add_subdirectory(./examples/DigitRecognition)
+# add_subdirectory(./examples/XorProblem)
